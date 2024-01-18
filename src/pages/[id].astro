@@ -45,7 +45,7 @@ const _id = meta.ethscription_number
 
 const ogName = "Asciify.Art";
 const ogEths = `Ethscription ${_id}`;
-const ogDescription = `${ogName} - ASCII-fy your Ethscription Image`;
+const ogDescription = `ASCII-fy your Ethscription Image`;
 const ogTitle = `${ogDescription} - ${ogName}`;
 const imgUrl = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data?noscale=1`;
 const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(ogEths)}/${encodeURIComponent(imgUrl)}/og.png`;
