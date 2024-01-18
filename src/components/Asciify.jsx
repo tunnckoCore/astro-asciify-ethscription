@@ -2,7 +2,10 @@ import domtoimage from "dom-to-image-more";
 import { useState } from "react";
 
 export default function Asciify({ meta, prev, next }) {
+  delete meta.valid_listings;
   delete meta.valid_transfers;
+  delete meta.collection_items;
+  delete meta.collections;
 
   let charset = JSON.stringify(meta);
   const [dataUrl, setDataUrl] = useState("");
