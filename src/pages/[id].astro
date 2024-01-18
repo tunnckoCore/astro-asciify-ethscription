@@ -116,14 +116,37 @@ const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/ascii
   <body
     class="mx-auto flex max-w-3xl flex-col items-center justify-center bg-black text-black"
   >
-    <!-- <div class="flex w-full items-center justify-between">
-      <a href={`/${prev}?mode=prev`} class="bg-gray-200 p-2">
-        &LeftArrow; {prev}
-      </a>
-      <a href={`/${next}?mode=next`} class="bg-gray-200 p-2">
-        {next} &RightArrow;
-      </a>
-    </div> -->
     <Asciify meta={meta} prev={prev} next={next} client:load />
+    <script type="module" is:inline>
+      import domToImageMore from "https://esm.sh/dom-to-image-more@3.2.0";
+
+      const downloadButton = document.querySelector("#download-btn");
+
+      // const mapping = {
+      //   jpeg: domToImageMore.toJpeg,
+      //   jpg: domToImageMore.toJpeg,
+      //   png: domToImageMore.toPng,
+      // };
+
+      downloadButton.addEventListener("click", async () => {
+        const art = document.querySelector(".art");
+
+        const dataURL = await domToImageMore.toPng(art, {
+          width: 800,
+          height: 800,
+          bgcolor: "#000",
+          style: {
+            padding: 0,
+            margin: 0,
+          },
+        });
+
+        const link = document.createElement("a");
+        link.href = dataURL;
+        link.target = "_blank";
+        link.download = art.dataset.eid + ".png";
+        link.click();
+      });
+    </script>
   </body>
 </html>

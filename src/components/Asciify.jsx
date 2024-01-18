@@ -1,4 +1,4 @@
-import domtoimage from "dom-to-image-more";
+// import domtoimage from "dom-to-image-more";
 import { useState } from "react";
 
 export default function Asciify({ meta, prev, next }) {
@@ -8,7 +8,7 @@ export default function Asciify({ meta, prev, next }) {
   delete meta.collections;
 
   let charset = JSON.stringify(meta);
-  const [dataUrl, setDataUrl] = useState("");
+  // const [dataUrl, setDataUrl] = useState("");
   const [custom, setCustom] = useState(0);
 
   while (charset.length < 18_000) {
@@ -16,19 +16,39 @@ export default function Asciify({ meta, prev, next }) {
     charset += curr > 1000 ? charset.slice(0, 1000) : charset;
   }
 
-  const handleOnClick = async (e) => {
-    const uri = await domtoimage.toPng(e.target, {
-      width: 800,
-      height: 800,
-      bgcolor: "#000",
-      style: {
-        padding: 0,
-        margin: 0,
-      },
-    });
+  // const handleDownload = async () => {
+  //   alert("Downloading, please wait...");
+  //   const blob = await domtoimage.toPng(document.querySelector(".art"), {
+  //     width: 800,
+  //     height: 800,
+  //     bgcolor: "#000",
+  //     style: {
+  //       padding: 0,
+  //       margin: 0,
+  //     },
+  //   });
 
-    setDataUrl(uri);
-  };
+  //   const a = document.createElement("a");
+  //   a.href = blob;
+  //   a.download = `asciify-art-${meta.transaction_hash}.png`;
+  //   a.target = "_blank";
+  //   a.click();
+
+  //   // window.saveAs(blob, `111asciify-art-${meta.transaction_hash}.png`);
+  // };
+
+  // const handleOnClick = async (e) => {
+  //   // const uri = await domtoimage.toPng(e.target, {
+  //   //   width: 800,
+  //   //   height: 800,
+  //   //   bgcolor: "#000",
+  //   //   style: {
+  //   //     padding: 0,
+  //   //     margin: 0,
+  //   //   },
+  //   // });
+  //   // setDataUrl(uri);
+  // };
 
   const numberFormat = (num) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -58,15 +78,15 @@ export default function Asciify({ meta, prev, next }) {
             Go
           </button>
         </form>
-        <a
-          href={dataUrl}
-          target="_blank"
-          download={`astro-asciify-art-${meta.transaction_hash}.png`}
-          className="bg-gray-200 p-2"
-          onClick={handleOnClick}
+        <div
+          // href={dataUrl}
+          // target="_blank"
+          // download={`asciify-art-${meta.transaction_hash}.png`}
+          className="cursor-pointer bg-gray-200 p-2"
+          id="download-btn"
         >
           Download
-        </a>
+        </div>
         <a href={`/${next}`} className="bg-gray-200 p-2">
           #{numberFormat(next)} →
         </a>
@@ -77,7 +97,11 @@ export default function Asciify({ meta, prev, next }) {
             Not an image, try another
           </div>
         )}
-        {!isNotImage && <div className="asciiart art">{charset}</div>}
+        {!isNotImage && (
+          <div className="asciiart art" data-eid={meta.transaction_hash}>
+            {charset}
+          </div>
+        )}
       </div>
     </>
   );
