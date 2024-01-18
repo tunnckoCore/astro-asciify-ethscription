@@ -3,7 +3,7 @@ import Asciify from "../components/Asciify.jsx";
 
 const { searchParams } = new URL(Astro.request.url);
 
-const mode = searchParams.get("mode") || "next";
+// const mode = searchParams.get("mode") || "next";
 const { id } = Astro.params;
 
 const hash = id && id.startsWith("0x") ? id : "";
@@ -16,7 +16,7 @@ const { data: meta } = await fetch(
 const prev = num - 1 < 0 ? 0 : num - 1;
 const next = num + 1;
 
-const numberFormat = (num) => {
+const numberFormat = (num: any) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 

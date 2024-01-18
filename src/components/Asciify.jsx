@@ -27,12 +27,6 @@ export default function Asciify({ meta, prev, next }) {
     setDataUrl(uri);
   };
 
-  const handleGo = async (e) => {
-    e.preventDefault();
-
-    window.location.href = `/${custom}`;
-  };
-
   const numberFormat = (num) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
