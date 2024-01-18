@@ -123,8 +123,8 @@ while (charset.length < 18_000) {
       }
 
       .art {
-        width: 800px;
-        height: 800px;
+        width: 750px;
+        height: 750px;
       }
 
       /* .asciiart::selection {
@@ -134,7 +134,7 @@ while (charset.length < 18_000) {
     </style>
   </head>
   <body
-    class="mx-auto flex max-w-3xl flex-col items-center justify-center bg-black text-black"
+    class="mx-auto flex max-w-[750px] flex-col items-center justify-center bg-black text-black"
   >
     <div class="my-5 flex w-full items-center justify-between">
       <a href={`/${prev}`} class="bg-gray-200 p-2">
@@ -171,7 +171,7 @@ while (charset.length < 18_000) {
     >
       {
         isNotImage && (
-          <div class="mt-3.5 flex w-[800px] flex-col items-center justify-center text-gray-100">
+          <div class="mt-3.5 flex w-[750px] flex-col items-center justify-center text-gray-100">
             <h2 class="text-3xl font-bold">Not an image, try another</h2>
             <div class="my-4 overflow-x-hidden">
               {Object.entries(meta).map(([key, value]) => {
@@ -222,8 +222,8 @@ while (charset.length < 18_000) {
         const art = document.querySelector(".art");
 
         const dataURL = await domToImageMore.toPng(art, {
-          width: 800,
-          height: 800,
+          width: 750,
+          height: 750,
           bgcolor: "#000",
           style: {
             padding: 0,
@@ -231,11 +231,23 @@ while (charset.length < 18_000) {
           },
         });
 
-        const link = document.createElement("a");
-        link.href = dataURL;
-        link.target = "_blank";
-        link.download = art.dataset.eid + ".png";
-        link.click();
+        // const canvas = await domToImageMore.toCanvas(art, {
+        //   width: 750,
+        //   height: 750,
+        //   bgcolor: "#000",
+        //   style: {
+        //     padding: 0,
+        //     margin: 0,
+        //   },
+        // });
+
+        // document.body.appendChild(canvas);
+
+        // const link = document.createElement("a");
+        // link.href = dataURL;
+        // link.target = "_blank";
+        // link.download = art.dataset.eid + ".png";
+        // link.click();
       });
     </script>
   </body>
