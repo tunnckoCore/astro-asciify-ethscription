@@ -1,6 +1,10 @@
 ---
 import Asciify from "../components/Asciify.jsx";
 
+const numberFormat = (num: any) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const { searchParams, ...url } = new URL(Astro.request.url);
 
 // const mode = searchParams.get("mode") || "next";
@@ -9,19 +13,25 @@ const { id } = Astro.params;
 const hash = id && id.startsWith("0x") ? id : "";
 const num = !hash ? Number(id) : 0;
 
-const { data: meta } = await fetch(
-  "https://api.wgw.lol/api/ethscriptions/" + id,
-).then((x) => x.json());
-
 const prev = num - 1 < 0 ? 0 : num - 1;
 const next = num + 1;
 
-const numberFormat = (num: any) => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+let meta = await fetch(
+  "https://api.ethscriptions.com/api/ethscriptions/" + id,
+).then((x) => x.json());
+
+if (
+  meta.media_type === "image" &&
+  meta.image_removed_by_request_of_rights_holder
+) {
+  meta = await fetch("https://api.wgw.lol/api/ethscriptions/" + id).then((x) =>
+    x.json(),
+  );
+}
 
 const isNotImage =
-  !meta.mimetype.startsWith("image/") || meta.mimetype === "image/svg+xml";
+  meta.media_type !== "image" || meta.mimetype === "image/svg+xml";
+
 // if (!meta.mimetype.startsWith("image/") || meta.mimetype === "image/svg+xml") {
 //   const newLoc = mode === "next" ? next : prev;
 //   console.log(newLoc);
@@ -34,7 +44,7 @@ const _id = meta.ethscription_number
   : meta.transaction_hash;
 
 meta.title = `Ethscription ${_id} - Asciify.Art`;
-meta.url = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data`;
+meta.url = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data?noscale=1`;
 ---
 
 <html lang="en">
@@ -60,7 +70,7 @@ meta.url = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transa
 -->
     <meta
       property="og:image"
-      content={`https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(meta.title)}/${meta.url}/og.png`}
+      content={`https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(meta.title)}/${encodeURIComponent(meta.url)}/og.png`}
     />
 
     <!-- Twitter Meta Tags -->
@@ -77,7 +87,7 @@ meta.url = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transa
 -->
     <meta
       name="twitter:image"
-      content={`https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(meta.title)}/${meta.url}/og.png`}
+      content={`https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(meta.title)}/${encodeURIComponent(meta.url)}/og.png`}
     />
 
     <!-- Meta Tags Generated via https://www.opengraph.xyz -->
