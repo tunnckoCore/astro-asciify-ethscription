@@ -1,5 +1,14 @@
 ---
-import Asciify from "../components/Asciify.jsx";
+// import Asciify from "../components/Asciify.jsx";
+
+if (Astro.request.method === "POST") {
+  const formData: FormData = (await Astro.request.formData()) as FormData;
+  const eid = formData.get("eid");
+
+  if (eid) {
+    return Astro.redirect("/" + eid);
+  }
+}
 
 const numberFormat = (num: any) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -52,6 +61,17 @@ const ogTitle = `${ogDescription} - ${ogName}`;
 const imgUrl = `${url.origin}/og/${meta.transaction_hash}-${isNotImage ? 0 : 1}.png?ts=${Date.now()}`;
 // const imgUrl = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data?noscale=1`;
 const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(ogEths)}/${encodeURIComponent(imgUrl)}/og.png`;
+
+delete meta.valid_listings;
+delete meta.valid_transfers;
+delete meta.collection_items;
+delete meta.collections;
+
+let charset = JSON.stringify(meta);
+while (charset.length < 18_000) {
+  const curr = charset.length;
+  charset += curr > 1000 ? charset.slice(0, 1000) : charset;
+}
 ---
 
 <html lang="en">
@@ -116,8 +136,65 @@ const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/ascii
   <body
     class="mx-auto flex max-w-3xl flex-col items-center justify-center bg-black text-black"
   >
-    <Asciify meta={meta} prev={prev} next={next} client:load />
-    <script type="module" is:inline>
+    <div class="my-5 flex w-full items-center justify-between">
+      <a href={`/${prev}`} class="bg-gray-200 p-2">
+        ← #{numberFormat(prev)}
+      </a>
+      <form method="POST" action={`/${id}`}>
+        <input
+          autofocus
+          type="text"
+          name="eid"
+          id="eid"
+          required
+          min="0"
+          placeholder="Ethscription ID"
+          class="w-40 min-w-0 border bg-gray-900/70 px-2 py-1.5 text-gray-200 outline-none"
+        />
+        <button type="submit" class="border bg-gray-200 px-2 py-1.5">
+          Go
+        </button>
+      </form>
+      <div
+        class={`cursor-pointer bg-gray-200 p-2 ` +
+          (isNotImage ? "opacity-50" : "")}
+        id="download-btn"
+      >
+        Download
+      </div>
+      <a href={`/${next}`} class="bg-gray-200 p-2">
+        #{numberFormat(next)} →
+      </a>
+    </div>
+    <div
+      class="m-0 mb-8 flex items-center justify-center overflow-hidden border border-gray-100 p-2"
+    >
+      {
+        isNotImage && (
+          <div class="mt-3.5 flex w-[800px] flex-col items-center justify-center text-gray-100">
+            <h2 class="text-3xl font-bold">Not an image, try another</h2>
+            <div class="my-4 overflow-x-hidden">
+              {Object.entries(meta).map(([key, value]) => {
+                return (
+                  <p>
+                    <strong>{key}:</strong> {String(value)}
+                  </p>
+                );
+              })}
+            </div>
+          </div>
+        )
+      }
+      {
+        !isNotImage && (
+          <div class="asciiart art" data-eid={meta.transaction_hash}>
+            {charset}
+          </div>
+        )
+      }
+    </div>
+    <!-- <Asciify meta={meta} prev={prev} next={next} client:load /> -->
+    <script type="module" is:inline define:vars={{ isNotImage: isNotImage }}>
       import domToImageMore from "https://esm.sh/dom-to-image-more@3.2.0";
 
       const downloadButton = document.querySelector("#download-btn");
@@ -129,6 +206,8 @@ const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/ascii
       // };
 
       downloadButton.addEventListener("click", async () => {
+        if (isNotImage) return;
+
         const art = document.querySelector(".art");
 
         const dataURL = await domToImageMore.toPng(art, {

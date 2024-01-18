@@ -2,15 +2,15 @@
 import { useState } from "react";
 
 export default function Asciify({ meta, prev, next }) {
+  // const [dataUrl, setDataUrl] = useState("");
+  const [custom, setCustom] = useState(0);
+
   delete meta.valid_listings;
   delete meta.valid_transfers;
   delete meta.collection_items;
   delete meta.collections;
 
   let charset = JSON.stringify(meta);
-  // const [dataUrl, setDataUrl] = useState("");
-  const [custom, setCustom] = useState(0);
-
   while (charset.length < 18_000) {
     const curr = charset.length;
     charset += curr > 1000 ? charset.slice(0, 1000) : charset;
