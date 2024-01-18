@@ -101,7 +101,8 @@ while (charset.length < 18_000) {
     <meta name="twitter:description" content={ogDescription} />
     <meta name="twitter:image" content={ogImage} />
 
-    <style is:global define:vars={{ contentUri: `url("${meta.content_uri}")` }}>
+    <style is:global>
+      /* define:vars={{ contentUri: `url("${meta.content_uri}")` }} */
       * {
         box-sizing: border-box;
         margin: 0;
@@ -124,7 +125,6 @@ while (charset.length < 18_000) {
       .art {
         width: 800px;
         height: 800px;
-        background-image: var(--contentUri);
       }
 
       /* .asciiart::selection {
@@ -149,7 +149,7 @@ while (charset.length < 18_000) {
           required
           min="0"
           placeholder="Ethscription ID"
-          class="w-40 min-w-0 border bg-gray-900/70 px-2 py-1.5 text-gray-200 outline-none"
+          class="-mr-1 w-40 min-w-0 border bg-gray-900/70 px-2 py-1.5 text-gray-200 outline-none"
         />
         <button type="submit" class="border bg-gray-200 px-2 py-1.5">
           Go
@@ -175,9 +175,16 @@ while (charset.length < 18_000) {
             <h2 class="text-3xl font-bold">Not an image, try another</h2>
             <div class="my-4 overflow-x-hidden">
               {Object.entries(meta).map(([key, value]) => {
+                if (meta.mimetype === "text/html") {
+                  return null;
+                }
+
                 return (
                   <p>
-                    <strong>{key}:</strong> {String(value)}
+                    <strong>{key}:</strong>{" "}
+                    {typeof value === "number"
+                      ? numberFormat(String(value))
+                      : String(value)}
                   </p>
                 );
               })}
@@ -187,7 +194,11 @@ while (charset.length < 18_000) {
       }
       {
         !isNotImage && (
-          <div class="asciiart art" data-eid={meta.transaction_hash}>
+          <div
+            class="asciiart art"
+            data-eid={meta.transaction_hash}
+            style={`background-image: url("${meta.content_uri}")`}
+          >
             {charset}
           </div>
         )
