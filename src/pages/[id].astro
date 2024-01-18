@@ -5,7 +5,7 @@ const numberFormat = (num: any) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-const { searchParams, ...url } = new URL(Astro.request.url);
+const url = new URL(Astro.request.url);
 
 // const mode = searchParams.get("mode") || "next";
 const { id } = Astro.params;
@@ -43,11 +43,13 @@ const _id = meta.ethscription_number
   ? "#" + numberFormat(meta.ethscription_number)
   : meta.transaction_hash;
 
+const ogHref = url.origin + url.pathname;
 const ogName = "Asciify.Art";
 const ogEths = `Ethscription ${_id}`;
 const ogDescription = `ASCII-fy your Ethscription Image`;
 const ogTitle = `${ogDescription} - ${ogName}`;
-const imgUrl = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data?noscale=1`;
+const imgUrl = `${url.origin}/og/${meta.transaction_hash}.png?image=${isNotImage ? 0 : 1}&ts=${Date.now()}`;
+// const imgUrl = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data?noscale=1`;
 const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(ogEths)}/${encodeURIComponent(imgUrl)}/og.png`;
 ---
 
@@ -63,7 +65,7 @@ const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/ascii
     <meta name="description" content={ogDescription} />
 
     <!-- Facebook Meta Tags -->
-    <meta property="og:url" content={url.href} />
+    <meta property="og:url" content={ogHref} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={ogName} />
     <meta property="og:description" content={ogDescription} />
@@ -73,7 +75,7 @@ const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/ascii
     <meta name="twitter:creator" content="@wgw_eth" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="twitter:domain" content={url.origin} />
-    <meta property="twitter:url" content={url.href} />
+    <meta property="twitter:url" content={ogHref} />
     <meta name="twitter:title" content={ogName} />
     <meta name="twitter:description" content={ogDescription} />
     <meta name="twitter:image" content={imgUrl} />
