@@ -51,9 +51,12 @@ meta.title = `Ethscription ${_id} - Asciify.Art`;
     /><meta property="og:title" content={`Asciify.Art`} /><meta
       property="og:description"
       content={meta.title}
-    /><meta property="og:image" content={meta.content_uri} /><meta
+    /><meta
+      property="og:image"
+      content={`https://api.wgw.lol/api/ethscriptions/${meta.transaction_hash}/data`}
+    /><meta
       property="og:image:secure_url"
-      content={meta.content_uri}
+      content={`https://api.wgw.lol/api/ethscriptions/${meta.transaction_hash}/data`}
     /><meta property="og:image:type" content="image/jpg" /><meta
       property="og:image:width"
       content="1707"
@@ -66,7 +69,10 @@ meta.title = `Ethscription ${_id} - Asciify.Art`;
     /><meta name="twitter:title" content={`Asciify.Art`} /><meta
       name="twitter:description"
       content={meta.title}
-    /><meta name="twitter:image" content={meta.content_uri} />
+    /><meta
+      name="twitter:image"
+      content={`https://api.wgw.lol/api/ethscriptions/${meta.transaction_hash}/data`}
+    />
     <title>{meta.title}</title>
     <style is:global define:vars={{ contentUri: `url("${meta.content_uri}")` }}>
       * {
