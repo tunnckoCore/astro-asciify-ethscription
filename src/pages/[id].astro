@@ -24,9 +24,10 @@ if (
   meta.media_type === "image" &&
   meta.image_removed_by_request_of_rights_holder
 ) {
-  meta = await fetch("https://api.wgw.lol/api/ethscriptions/" + id).then((x) =>
-    x.json(),
+  const resp = await fetch("https://api.wgw.lol/api/ethscriptions/" + id).then(
+    (x) => x.json(),
   );
+  meta = resp.data;
 }
 
 const isNotImage =
