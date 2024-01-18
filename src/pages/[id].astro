@@ -43,8 +43,11 @@ const _id = meta.ethscription_number
   ? "#" + numberFormat(meta.ethscription_number)
   : meta.transaction_hash;
 
-meta.title = `Ethscription ${_id} - Asciify.Art`;
-meta.url = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data?noscale=1`;
+const ogName = "Asciify.Art";
+const ogDescription = `Ethscription ${_id}`;
+const ogTitle = `${ogDescription} - ${ogName}`;
+const imgUrl = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transaction_hash}/data?noscale=1`;
+const ogImage = `https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(ogTitle)}/${encodeURIComponent(imgUrl)}/og.png`;
 ---
 
 <html lang="en">
@@ -55,39 +58,25 @@ meta.url = `https://api.wgw.lol/api/ethscriptions/${isNotImage ? 0 : meta.transa
     <meta name="generator" content={Astro.generator} />
 
     <!-- HTML Meta Tags -->
-    <title>{meta.title}</title>
-    <meta name="description" content={meta.title} />
+    <title>{ogTitle}</title>
+    <meta
+      name="description"
+      content={ogTitle + " - Ascii-fy your ethscription image"}
+    />
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content={url.href} />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Asciify.Art" />
-    <meta property="og:description" content={meta.title} />
-    <!--
-  You can generate this image URL dynamically: https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/{site_text}/{title_text}/{image_url}/og.png
-  Replace the variables in the brackets with your own values and use this URL in the image tag below this comment. Ensure values are URL encoded.
-  For more information, read: https://www.opengraph.xyz/blog/how-to-implement-dynamic-open-graph-images
--->
-    <meta
-      property="og:image"
-      content={`https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(meta.title)}/${encodeURIComponent(meta.url)}/og.png`}
-    />
-
+    <meta property="og:title" content={ogName} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:image" content={ogImage} />
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="twitter:domain" content={url.origin} />
     <meta property="twitter:url" content={url.href} />
-    <meta name="twitter:title" content="Asciify.Art" />
-    <meta name="twitter:description" content={meta.title} />
-    <!--
-  You can generate this image URL dynamically: https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/{site_text}/{title_text}/{image_url}/og.png
-  Replace the variables in the brackets with your own values and use this URL in the image tag below this comment. Ensure values are URL encoded.
-  For more information, read: https://www.opengraph.xyz/blog/how-to-implement-dynamic-open-graph-images
--->
-    <meta
-      name="twitter:image"
-      content={`https://ogcdn.net/6064b869-74ed-4eb9-b76c-0b701ffe7e6b/v4/asciify.art/${encodeURIComponent(meta.title)}/${encodeURIComponent(meta.url)}/og.png`}
-    />
+    <meta name="twitter:title" content={ogName} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
 
     <style is:global define:vars={{ contentUri: `url("${meta.content_uri}")` }}>
       * {
