@@ -1,0 +1,116 @@
+---
+import Asciify from "../components/Asciify.jsx";
+
+const { searchParams } = new URL(Astro.request.url);
+
+const mode = searchParams.get("mode") || "next";
+const { id } = Astro.params;
+
+const hash = id && id.startsWith("0x") ? id : "";
+const num = !hash ? Number(id) : 0;
+
+const { data: meta } = await fetch(
+  "https://api.wgw.lol/api/ethscriptions/" + id,
+).then((x) => x.json());
+
+const prev = num - 1 < 0 ? 0 : num - 1;
+const next = num + 1;
+
+const numberFormat = (num) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+// if (!meta.mimetype.startsWith("image/") || meta.mimetype === "image/svg+xml") {
+//   const newLoc = mode === "next" ? next : prev;
+//   console.log(newLoc);
+//   // return Astro.redirect("/?error=not-an-image");
+//   return Astro.redirect("/" + newLoc + "?ts=" + Date.now());
+// }
+
+const _id = meta.ethscription_number
+  ? "#" + numberFormat(meta.ethscription_number)
+  : meta.transaction_hash;
+
+meta.title = `Ethscription ${_id} - Asciify.Art`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={meta.title} />
+
+    <meta property="og:site_name" content="Asciify.Art" /><meta
+      property="og:type"
+      content="website"
+    /><meta property="og:url" content="https://asciify.art/" /><meta
+      property="og:locale"
+      content="en_US"
+    /><meta property="og:title" content={`Asciify.Art`} /><meta
+      property="og:description"
+      content={meta.title}
+    /><meta property="og:image" content={meta.content_uri} /><meta
+      property="og:image:secure_url"
+      content={meta.content_uri}
+    /><meta property="og:image:type" content="image/jpg" /><meta
+      property="og:image:width"
+      content="1707"
+    /><meta property="og:image:height" content="1233" /><meta
+      name="twitter:card"
+      content="summary"
+    /><meta name="twitter:site" content="@wgw_eth" /><meta
+      name="twitter:creator"
+      content="@wgw_eth"
+    /><meta name="twitter:title" content={`Asciify.Art`} /><meta
+      name="twitter:description"
+      content={meta.title}
+    /><meta name="twitter:image" content={meta.content_uri} />
+    <title>{meta.title}</title>
+    <style is:global define:vars={{ contentUri: `url("${meta.content_uri}")` }}>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      .asciiart {
+        background-clip: text;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        -webkit-text-fill-color: transparent;
+        text-fill-color: transparent;
+        word-break: break-all;
+        color: #fff;
+        font-family: monospace;
+        font-size: 10px;
+        text-align: justify;
+      }
+
+      .art {
+        width: 800px;
+        height: 800px;
+        background-image: var(--contentUri);
+      }
+
+      /* .asciiart::selection {
+        background: transparent;
+        color: transparent;
+      } */
+    </style>
+  </head>
+  <body
+    class="mx-auto flex max-w-3xl flex-col items-center justify-center bg-black text-black"
+  >
+    <!-- <div class="flex w-full items-center justify-between">
+      <a href={`/${prev}?mode=prev`} class="bg-gray-200 p-2">
+        &LeftArrow; {prev}
+      </a>
+      <a href={`/${next}?mode=next`} class="bg-gray-200 p-2">
+        {next} &RightArrow;
+      </a>
+    </div> -->
+    <Asciify meta={meta} prev={prev} next={next} client:load />
+  </body>
+</html>
