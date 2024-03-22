@@ -1,17 +1,17 @@
 ---
 // import Asciify from "../components/Asciify.jsx";
 
-if (Astro.request.method === "POST") {
+if (Astro.request.method === 'POST') {
   const formData: FormData = (await Astro.request.formData()) as FormData;
-  const eid = formData.get("eid");
+  const eid = formData.get('eid');
 
   if (eid) {
-    return Astro.redirect("/" + eid);
+    return Astro.redirect('/' + eid);
   }
 }
 
 const numberFormat = (num: any) => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
 const url = new URL(Astro.request.url);
@@ -19,28 +19,22 @@ const url = new URL(Astro.request.url);
 // const mode = searchParams.get("mode") || "next";
 const { id } = Astro.params;
 
-const hash = id && id.startsWith("0x") ? id : "";
+const hash = id && id.startsWith('0x') ? id : '';
 const num = !hash ? Number(id) : 0;
 
 const prev = num - 1 < 0 ? 0 : num - 1;
 const next = num + 1;
 
-let meta = await fetch(
-  "https://api.ethscriptions.com/api/ethscriptions/" + id,
-).then((x) => x.json());
+let meta = await fetch('https://api.ethscriptions.com/api/ethscriptions/' + id).then((x) =>
+  x.json(),
+);
 
-if (
-  meta.media_type === "image" &&
-  meta.image_removed_by_request_of_rights_holder
-) {
-  const resp = await fetch("https://api.wgw.lol/api/ethscriptions/" + id).then(
-    (x) => x.json(),
-  );
+if (meta.media_type === 'image' && meta.image_removed_by_request_of_rights_holder) {
+  const resp = await fetch('https://api.wgw.lol/api/ethscriptions/' + id).then((x) => x.json());
   meta = resp.data;
 }
 
-const isNotImage =
-  meta.media_type !== "image" || meta.mimetype === "image/svg+xml";
+const isNotImage = meta.media_type !== 'image' || meta.mimetype === 'image/svg+xml';
 
 // if (!meta.mimetype.startsWith("image/") || meta.mimetype === "image/svg+xml") {
 //   const newLoc = mode === "next" ? next : prev;
@@ -50,11 +44,11 @@ const isNotImage =
 // }
 
 const _id = meta.ethscription_number
-  ? "#" + numberFormat(meta.ethscription_number)
+  ? '#' + numberFormat(meta.ethscription_number)
   : meta.transaction_hash;
 
 const ogHref = url.origin + url.pathname;
-const ogName = "Asciify.Art";
+const ogName = 'Asciify.Art';
 const ogEths = `Ethscription ${_id}`;
 const ogDescription = `ASCII-fy your Ethscription Image`;
 const ogTitle = `${ogDescription} - ${ogName}`;
@@ -133,9 +127,7 @@ while (charset.length < 18_000) {
       } */
     </style>
   </head>
-  <body
-    class="mx-auto flex max-w-[750px] flex-col items-center justify-center bg-black text-black"
-  >
+  <body class="mx-auto flex max-w-[750px] flex-col items-center justify-center bg-black text-black">
     <div class="my-5 flex w-full items-center justify-between">
       <a href={`/${prev}`} class="bg-gray-200 p-2">
         ← #{numberFormat(prev)}
@@ -151,13 +143,10 @@ while (charset.length < 18_000) {
           placeholder="Ethscription ID"
           class="-mr-1 w-40 min-w-0 border bg-gray-900/70 px-2 py-1.5 text-gray-200 outline-none"
         />
-        <button type="submit" class="border bg-gray-200 px-2 py-1.5">
-          Go
-        </button>
+        <button type="submit" class="border bg-gray-200 px-2 py-1.5"> Go </button>
       </form>
       <div
-        class={`cursor-pointer bg-gray-200 p-2 ` +
-          (isNotImage ? "opacity-50" : "")}
+        class={`cursor-pointer bg-gray-200 p-2 ` + (isNotImage ? 'opacity-50' : '')}
         id="download-btn"
       >
         Download
@@ -175,16 +164,14 @@ while (charset.length < 18_000) {
             <h2 class="text-3xl font-bold">Not an image, try another</h2>
             <div class="my-4 overflow-x-hidden">
               {Object.entries(meta).map(([key, value]) => {
-                if (meta.mimetype === "text/html") {
+                if (meta.mimetype === 'text/html') {
                   return null;
                 }
 
                 return (
                   <p>
-                    <strong>{key}:</strong>{" "}
-                    {typeof value === "number"
-                      ? numberFormat(String(value))
-                      : String(value)}
+                    <strong>{key}:</strong>{' '}
+                    {typeof value === 'number' ? numberFormat(String(value)) : String(value)}
                   </p>
                 );
               })}
@@ -206,9 +193,9 @@ while (charset.length < 18_000) {
     </div>
     <!-- <Asciify meta={meta} prev={prev} next={next} client:load /> -->
     <script type="module" is:inline define:vars={{ isNotImage: isNotImage }}>
-      import domToImageMore from "https://esm.sh/dom-to-image-more@3.2.0";
+      import domToImageMore from 'https://esm.sh/dom-to-image-more@3.2.0';
 
-      const downloadButton = document.querySelector("#download-btn");
+      const downloadButton = document.querySelector('#download-btn');
 
       // const mapping = {
       //   jpeg: domToImageMore.toJpeg,
@@ -216,15 +203,15 @@ while (charset.length < 18_000) {
       //   png: domToImageMore.toPng,
       // };
 
-      downloadButton.addEventListener("click", async () => {
+      downloadButton.addEventListener('click', async () => {
         if (isNotImage) return;
 
-        const art = document.querySelector(".art");
+        const art = document.querySelector('.art');
 
         const dataURL = await domToImageMore.toPng(art, {
           width: 750,
           height: 750,
-          bgcolor: "#000",
+          bgcolor: '#000',
           style: {
             padding: 0,
             margin: 0,
@@ -243,11 +230,11 @@ while (charset.length < 18_000) {
 
         // document.body.appendChild(canvas);
 
-        // const link = document.createElement("a");
-        // link.href = dataURL;
-        // link.target = "_blank";
-        // link.download = art.dataset.eid + ".png";
-        // link.click();
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.target = '_blank';
+        link.download = art.dataset.eid + '.png';
+        link.click();
       });
     </script>
   </body>
